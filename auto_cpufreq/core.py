@@ -286,11 +286,16 @@ def deploy_daemon():
     try:
         orig_set = "AutoEnable=true"
         change_set = "AutoEnable=false"
-        with btconf.open(mode="r+") as f:
-            content = f.read()
-            f.seek(0)
-            f.truncate()
-            f.write(content.replace(orig_set, change_set))
+
+        if btconf.exists():
+            with btconf.open(mode="r+") as f:
+                content = f.read()
+                f.seek(0)
+                f.truncate()
+                f.write(content.replace(orig_set, change_set))
+        else:
+            with btconf.open(mode="w+") as f:
+                f.write(change_set)
     except Exception as e:
         print(f"\nERROR:\nWas unable to turn off bluetooth on boot\n{repr(e)}")
 
